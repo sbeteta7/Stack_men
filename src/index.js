@@ -3,25 +3,32 @@ import morgan from 'morgan'
 import { engine } from 'express-handlebars'
 import {join,dirname} from 'path'
 import {fileURLToPath} from 'url'
+import categoriaRoutes from './routes/categoria.routes.js'
 
 //Initializacion
+    //Se hace uso de express para la creacion de la aplicacion
 const app = express();
+    //Type: module , la palabra reservada dir se tiene que inicializar manualmente cuando usamos type: module
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+
 //Settings
+    //Ejecutar puerto de la variable de entorno o el puerto 3000 en caso contrario
 app.set('port', process.env.PORT || 3000);
 //Configurando carpeta para las vistas
 app.set('views', join(__dirname, 'views'));
 // Configurando el motor de plantillas predeterminado
 app.set('view engine', 'hbs');
 
+
 //Configurando el motor de plantillas
 app.engine('hbs', engine({
-    defaultLayout: 'main',
-    layoutsDir: join(app.get('views'), 'layouts'),
-    partialsDir: join(app.get('views'), 'partials'),
-    extname: '.hbs'
+defaultLayout: 'main',
+layoutsDir: join(app.get('views'), 'layouts'),
+partialsDir: join(app.get('views'), 'partials'),
+extname: '.hbs'
 }));
+
 
 //Middlewares
 app.use(morgan('dev'));
@@ -30,16 +37,31 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
+
 //Routes
 app.get('/', (req, res) => {
-    res.render('index');
+res.render('index');
 });
+
+
+app.get('/producto', (req, res) => {
+res.render('producto');
+});
+
+
+
+
+app.use(categoriaRoutes)
+
+
 
 //Publics Files
 //Funcion Join,public los usuarios pueden utilizar lo que hay en la carpeta public
 app.use(express.static(join(__dirname, 'public')));
 
+
 //Run Server
+
 app.listen(app.get('port'), () => {
-    console.log('cargando el puerto', app.get('port'));
-}); 
+console.log('cargando el puerto', app.get('port'));
+});
